@@ -1,0 +1,38 @@
+1. How many users completed an exercise in their first month per monthly cohort?
+Assume you have two tables in our company’s database:
+● 'users' table, with columns 'user_id', 'created_at'
+● ‘exercises’ table, with columns 'exercise_id', 'user_id', 'exercise_completion_date'
+Write a single SQL query that breaks up the users based on the month that they signed up (their
+cohort month), and determines the percentage of users that have a completed exercise in their
+first month for each monthly cohort (e.g., the 2018 January cohort has x% of users completing
+an exercise in their first month, 2018 February cohort has x% of users completing an exercise in
+their first month, etc.).
+
+
+SELECT to_char(U.created_at,'YYYY-MM') as cohort, 
+to_char(E.exercise_completion_date, 'YYYY-MM') as ex_YM,
+(COUNT(U.user_id)*100/ (SELECT(COUNT(*) FROM users as U))),
+E.user_id
+FROM users as U 
+INNER JOIN exercises as E ON U .user_id = B.user_id
+GROUP BY to_char(U.created_at, 'YYYY-MM'), to_char(E.exercise_complertion_date, 'YYYY-MM');
+
+
+2. Which organizations have the most severe patient population?
+Assume you have two tables in our company’s database:
+● ‘Providers’ table that contains ‘provider_id’, ‘organization_id’, and ‘organization_name’
+● ‘Phq9’ table that contains ‘patient_id’,’provider_id’, ‘score’,’datetime_created’
+For context, A phq score ranges from 0-27 and anything 20 or above is considered severe.
+Write a single query that finds the top five organizations that have the highest average phq9
+score per patient.
+
+
+SELECT Pr.provider_id, Pr.organization_name, Pr.provider_id, COUNT(Ph.patient_id), AVG(Ph.score)
+FROM Providers as Pr
+JOIN Phq9 as Ph ON Pr .provider_id = Ph.provider_id
+GROUP BY Pr.organization_name
+ORDER BY DESC AVG(Ph.score)/COUNT(Ph.patient_id)
+LIMIT 5;
+
+
+
